@@ -1,0 +1,138 @@
+/* crio uma tabela/data set */
+DATA TESTE;
+/* 	criou colunas/variaveis */
+   INPUT VARIAVEL1 VARIAVEL2;
+/*    indicação que os valores das colunas/variaveis vão começar na  linha debaixo */
+   DATALINES;
+/*    valores de cada colunas/variaveis */
+   1 2
+   ;
+RUN;
+
+/* PRINTANDO A TABELA/DATA SET */
+PROC PRINT DATA=TESTE;
+RUN;
+
+
+/* 							LEITURA E EXIBIÇÃO DOS DADOS */
+DATA Exemplo2;
+/* 	ESSE $ TEM QUE VIR DPS DE UMA COLUNA/VARIAVEL STRING */
+	INPUT Nome $ Idade Sexo $;
+	DATALINES;
+	Wellington 21 M
+	Wesley 45 M
+	Ana 21 F
+	;
+RUN;
+
+PROC PRINT DATA=EXEMPLO2;
+RUN;
+
+
+/* 							MANIPULANDO BASE DE DADOS */
+DATA ExpManipulaDado;
+/* 	PEGANDO UMA DATASET JÁ EXISTENTE */
+	SET Exemplo2;
+/* 	IF ELSE PADRÃO DIFERENÃ É O THEN(ENTÃO) */
+	IF idade > 18 THEN Categoria = 'Adulto';
+	ELSE Categoria = 'Jovem';
+RUN;
+
+PROC PRINT DATA= expmanipuladado;
+RUN;
+
+/* 							ANALISES ESTATISTICAS */
+/* MEANS faz uma estatísticas descritivas para as variáveis especificadas no conjunto de dados. */
+PROC MEANS DATA=EXPMANIPULADADO;
+/* 	ESTOU PASSANDO AS COLUNAS QUE EU QUERO */
+	VAR idade;
+RUN;
+
+DATA ArrumandoBase;
+	SET EXPMANIPULADADO;
+	INPUT Altura;
+	DATALINES;
+	171
+	168
+	162
+; RUN;
+/* 							VIZUALIZAÇÃO SIMPLES DE DADOS(CRIANDO GRAFICO) */
+PROC SGPLOT DATA=ArrumandoBase;
+	SCATTER X=IDADE Y=ALTURA / GROUP=CATEGORIA;
+RUN;
+
+/* 							FAZENDO O MERGE/JOIN (JUNTANDO DUAS BASES DE DADOS) */
+DATA NovoConjunto;
+	MERGE TabelaA TabelaB;
+	BY RelaçãoEntreAsDuasTabelas;
+RUN;
+
+/* 							USANDO SQL NORMAL NO SAS */
+PROC SQL;
+   SELECT Variavel1, AVG(Variavel2)
+   FROM MeuConjunto
+   GROUP BY Variavel1;
+QUIT;
+
+/* 							CRIANDO MACRO NO SAS */
+%MACRO NomeDaMacro(Parametro);
+	DATA NovaTabela;
+		SET PegarUmaTabela;
+		NovaVariavel/NovaColuna = &Parametro;
+	RUN;
+%MEND;
+
+%NomeDaMacro(5);
+
+/* 							CRIANDO NOVOS GRAFICOS */					
+PROC SGPLOT DATA=PassandoUmaTabela;
+   SCATTER X=Coluna1 Y=Coluna2 / GROUP=OutraColuna;
+   REG X=Coluna1 Y=Coluna2 / GROUP=OutraColuna;
+RUN;
+
+/* 							ANALISE DE DADOS COM FUNÇÕES PRE-SETADAS */
+PROC GLM DATA=PassandoUmaTabela;
+/* Define a variável categórica. Se você tem uma variável que representa grupos (por exemplo, tratamento A, B, C), você a declara como uma variável de classe. */
+   CLASS Categoria;
+   MODEL VariavelResposta = VariavelExplicativa Categoria;
+RUN;
+
+/* 							ANALISE DE SERIES TEMPORAIS */
+PROC TIMESERIES DATA=MeuConjunto;
+   ID Data;
+   VAR VariavelTemporal;
+   RUN;
+
+/* 							PASSANDO PARAMETRO/FORMATO */
+PROC FORMAT;
+   VALUE FaixaEtaria
+      0-18 = 'Jovem'
+      19-30 = 'Adulto'
+      31-HIGH = 'Senior';
+RUN;
+
+DATA MeuConjuntoFormatado;
+   SET MeuConjunto;
+   FORMAT Idade FaixaEtaria.;
+RUN;
+
+/* 							MANIPULAÇÃO DE TEXTO E STRING */
+DATA NovoConjunto;
+   SET MeuConjunto;
+   NovaVariavel = CAT('Prefixo_', VariavelTexto);
+RUN;
+
+/* 							EXPORTAÇÃO DE DADOS */
+PROC EXPORT DATA=MeuConjunto
+   OUTFILE='C:\Caminho\MeuConjunto.csv'
+   DBMS=CSV REPLACE;
+   PUTNAMES=YES;
+RUN;
+
+/* 							MEXENDO COM DATA */
+DATA NovoConjunto;
+   SET MeuConjunto;
+   Ano = YEAR(Data);
+   ProximoAno = INTNX('YEAR', Data, 1);
+RUN;
+/* Neste exemplo, YEAR(Data) extrai o ano da variável de data Data, e INTNX('YEAR', Data, 1) avança para o próximo ano. */
