@@ -136,3 +136,19 @@ DATA NovoConjunto;
    ProximoAno = INTNX('YEAR', Data, 1);
 RUN;
 /* Neste exemplo, YEAR(Data) extrai o ano da variável de data Data, e INTNX('YEAR', Data, 1) avança para o próximo ano. */
+
+
+/* 							MANIPULANDO DATA */
+DATA NovoConjunto;
+	SET Pega um conjunto;
+	CRIA UMA NOVA VARIALVEL/COLUNA CHAMADA "ANO" E A FUNÇÃO YEAR PEGA O ANO DA COLUNA(DATA)
+	Ano = YEAR(Data);
+RUN;
+
+DATA NovoConjunto;
+   SET MeuConjunto;
+   Neste exemplo, ProximoAno = INTNX('YEAR', Data, 1) cria uma nova variável chamada ProximoAno, que representa a data avançada para o próximo ano a partir da variável de data Data. Aqui, 'YEAR' indica a unidade de tempo (ano), e 1 indica o número de unidades para avançar.
+
+/* Você pode ajustar os parâmetros de INTNX conforme necessário. Por exemplo, INTNX('MONTH', Data, 3) avançaria três meses a partir da data especificada. */
+   ProximoAno = INTNX('YEAR', Data, 1);
+RUN;
