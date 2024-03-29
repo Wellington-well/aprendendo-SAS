@@ -1,0 +1,17 @@
+DATA Venda_Consorcio;
+/* 	criou colunas/variaveis */
+   INPUT Contrato ;
+/*    indicação que os valores das colunas/variaveis vão começar na  linha debaixo */
+   DATALINES; /*    valores de cada colunas/variaveis */
+  	12534
+	5432287
+	435545
+	9378
+	775
+   ;
+RUN;
+
+data Venda_Consorcio;
+   set Venda_Consorcio;
+     Contrato_formatado1 = PUT(Contrato, Z7.); 
+run;
