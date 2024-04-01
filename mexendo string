@@ -15,3 +15,9 @@ data Venda_Consorcio;
    set Venda_Consorcio;
      Contrato_formatado1 = PUT(Contrato, Z7.); 
 run;
+
+data Venda_Consorcio;
+	set Venda_Consorcio;
+	GR = substrn(Contrato_formatado1, 1, 4);
+	CT = substrn(Contrato_formatado1, 5, 7);
+;run;
